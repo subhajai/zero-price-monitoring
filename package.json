@@ -1,0 +1,14 @@
+{
+  "name": "zero-price-monitor",
+  "version": "1.0.0",
+  "description": "Zero Price Products Monitor - UAT",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "algoliasearch": "^5.50.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
