@@ -68,17 +68,29 @@ app.get('/api/products', async (req, res) => {
 
         const page = parseInt(req.query.page) || 0;
         const hitsPerPage = parseInt(req.query.hitsPerPage) || 50;
+        const excludeFreeGifts = req.query.excludeFreeGifts === 'true';
+
+        let displayData = productsCache.data;
+        
+        // Filter out free gifts if requested
+        if (excludeFreeGifts) {
+            const giftKeywords = ['free gift', 'gwp', 'ของแถม'];
+            displayData = displayData.filter(product => {
+                const name = (product.name || '').toLowerCase();
+                return !giftKeywords.some(keyword => name.includes(keyword));
+            });
+        }
         
         // Manual pagination from cache
         const start = page * hitsPerPage;
         const end = start + hitsPerPage;
-        const paginatedHits = productsCache.data.slice(start, end);
+        const paginatedHits = displayData.slice(start, end);
 
         res.json({
             hits: paginatedHits,
-            nbHits: productsCache.totalHits,
+            nbHits: displayData.length,
             page: page,
-            nbPages: Math.ceil(productsCache.totalHits / hitsPerPage)
+            nbPages: Math.ceil(displayData.length / hitsPerPage)
         });
     } catch (err) {
         console.error('Error fetching data:', err);

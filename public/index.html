@@ -20,8 +20,12 @@
                     Live monitoring of UAT Algolia Index (twd_cds_th_products) for items with price=0 or final_price=0.
                 </p>
             </div>
-            <div class="mt-4 flex md:mt-0 md:ml-4 gap-3">
-                <div class="flex items-center text-sm font-medium text-gray-500 bg-white px-4 py-2 rounded-md shadow-sm border border-gray-200">
+            <div class="mt-4 flex flex-wrap items-center md:mt-0 md:ml-4 gap-3">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" x-model="excludeFreeGifts" @change="fetchProducts(0)" class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                    <span class="ml-2 text-sm text-gray-700">Exclude Free Gifts (GWP/ของแถม)</span>
+                </label>
+                <div class="flex items-center text-sm font-medium text-gray-500 bg-white px-4 py-2 rounded-md shadow-sm border border-gray-200 ml-4">
                     <span class="mr-2">Total Issues:</span>
                     <span x-text="totalHits" class="text-red-600 font-bold text-lg">0</span>
                 </div>
@@ -172,6 +176,7 @@
             return {
                 products: [],
                 searchQuery: '',
+                excludeFreeGifts: true,
                 get filteredProducts() {
                     if (this.searchQuery === '') {
                         return this.products;
@@ -199,7 +204,7 @@
                     this.error = null;
                     
                     try {
-                        const response = await fetch(`/api/products?page=${page}&hitsPerPage=${this.hitsPerPage}`);
+                        const response = await fetch(`/api/products?page=${page}&hitsPerPage=${this.hitsPerPage}&excludeFreeGifts=${this.excludeFreeGifts}`);
 
                         if (!response.ok) {
                             throw new Error(`API returned status: ${response.status}`);
